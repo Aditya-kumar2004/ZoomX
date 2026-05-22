@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Meeting, Participant
+from .models import Meeting, Participant, ChatMessage
 
 
 
@@ -14,8 +14,33 @@ class ParticipantSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'display_name',
-            'joined_at'
+            'is_host',
+            'joined_at',
+            'channel_name',
+            'is_active',
+            'left_at'
         ]
+
+
+# Chat Message Serializer
+class ChatMessageSerializer(serializers.ModelSerializer):
+    sender_id = serializers.IntegerField(source='sender.id', read_only=True, allow_null=True)
+    sender_username = serializers.CharField(source='sender.username', read_only=True, allow_null=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = [
+            'id',
+            'sender_id',
+            'sender_username',
+            'sender_name',
+            'sender_email',
+            'sender_avatar',
+            'message',
+            'is_deleted',
+            'created_at'
+        ]
+
 
 
 
@@ -24,6 +49,7 @@ class MeetingSerializer(serializers.ModelSerializer):
 
     # Show All Participants
     participants = ParticipantSerializer(
+        source='participant_sessions',
         many=True,
         read_only=True
     )
@@ -42,6 +68,7 @@ class MeetingSerializer(serializers.ModelSerializer):
 
             'id',
             'meeting_id',
+            'meeting_code',
             'title',
             'description',
             'meeting_type',
@@ -50,6 +77,7 @@ class MeetingSerializer(serializers.ModelSerializer):
             'duration',
             'created_at',
             'is_active',
+            'is_deleted',
             'host_email',
 
             # Extra Fields
@@ -66,4 +94,4 @@ class MeetingSerializer(serializers.ModelSerializer):
     # Function to Count Participants
     def get_participant_count(self, obj):
 
-        return obj.participants.count()
+        return obj.participant_sessions.count()

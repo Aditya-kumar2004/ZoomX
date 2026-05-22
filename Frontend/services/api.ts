@@ -83,6 +83,14 @@ export const meetingAPI = {
     });
     if (!res.ok) throw new Error('Failed to delete');
   },
+  endMeeting: async (meetingId: string) => {
+    const res = await fetch(`${BASE_URL}/meetings/${meetingId}/end/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+    });
+    if (!res.ok) throw new Error('Failed to end meeting');
+  },
+  getMessages: (meetingId: string) => request<any>(`/meetings/${meetingId}/messages/`),
 };
 
 export const authAPI = {

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { meetingAPI } from "@/services/api";
 
 const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000";
 
@@ -73,22 +74,7 @@ export function useWebRTC({
   }
 
   const [remotePeers, setRemotePeers] = useState<RemotePeer[]>([]);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
-    {
-      id: "1",
-      sender: "Alex Morgan",
-      text: "Hey everyone! Ready to start? 👋",
-      time: "10:29",
-      isMe: false,
-    },
-    {
-      id: "2",
-      sender: "Jamie Chen",
-      text: "Yes! Let's go 🚀",
-      time: "10:29",
-      isMe: false,
-    },
-  ]);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [wsConnected, setWsConnected] = useState(false);
 
   // Admission States
@@ -124,6 +110,49 @@ export function useWebRTC({
     onMeetingEndedRef.current = onMeetingEnded;
     userRef.current = user;
   });
+
+  // Load chat history from SQLite DB when the meeting starts or participant joins
+  useEffect(() => {
+    if (!meetingId) return;
+
+    let isMounted = true;
+    meetingAPI.getMessages(meetingId)
+      .then((data) => {
+        if (!isMounted) return;
+
+        const messagesArray = Array.isArray(data) ? data : (data?.results || []);
+        const loadedMessages: ChatMessage[] = messagesArray.map((msg: any) => {
+          const isMe = msg.sender_email === user?.email || (msg.sender_name === userName && !msg.sender_email);
+
+          let timeFormatted = "";
+          try {
+            const date = new Date(msg.created_at);
+            timeFormatted = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+          } catch (e) {
+            timeFormatted = "";
+          }
+
+          return {
+            id: msg.id.toString(),
+            sender: msg.sender_name,
+            text: msg.message,
+            time: timeFormatted,
+            isMe,
+            senderEmail: msg.sender_email || undefined,
+            senderAvatar: msg.sender_avatar || undefined
+          };
+        });
+
+        setChatMessages(loadedMessages);
+      })
+      .catch((err) => {
+        console.error("Failed to load chat history:", err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [meetingId, user?.email, userName]);
 
   // ── Create a new RTCPeerConnection for a given peer ────────────────────────
   const createPeerConnection = useCallback(
@@ -707,7 +736,15 @@ export function useWebRTC({
     }
   }, []);
 
-  const endMeetingForAll = useCallback(() => {
+  const endMeetingForAll = useCallback(async () => {
+    try {
+      if (meetingId) {
+        await meetingAPI.endMeeting(meetingId);
+      }
+    } catch (err) {
+      console.error("Failed to end meeting via API", err);
+    }
+    
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(
         JSON.stringify({
@@ -718,7 +755,7 @@ export function useWebRTC({
       );
     }
     setMeetingEnded(true);
-  }, []);
+  }, [meetingId]);
 
   return {
     remotePeers,

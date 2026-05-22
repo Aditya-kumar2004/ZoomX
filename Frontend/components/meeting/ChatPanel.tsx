@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Send } from "lucide-react";
 
@@ -22,6 +22,13 @@ interface ChatPanelProps {
 
 export function ChatPanel({ open, onClose, messages, onSend }: ChatPanelProps) {
   const [inputText, setInputText] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, open]);
 
   const sendMessage = () => {
     if (!inputText.trim()) return;
@@ -100,6 +107,7 @@ export function ChatPanel({ open, onClose, messages, onSend }: ChatPanelProps) {
                 </div>
               );
             })}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
