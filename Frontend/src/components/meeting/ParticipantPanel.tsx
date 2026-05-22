@@ -145,7 +145,7 @@ export function ParticipantPanel({
                           You
                         </span>
                       )}
-                      {!p.isYou && index === 0 && (
+                      {p.isHost && (
                         <span className="text-[9px] bg-[#2D6FFF]/20 text-[#2D6FFF] px-1.5 py-0.25 rounded-md shrink-0">
                           Host
                         </span>

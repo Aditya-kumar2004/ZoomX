@@ -17,6 +17,8 @@ export interface RemotePeer {
   stream: MediaStream | null;
   muted: boolean;
   cameraOff: boolean;
+  email?: string;
+  avatar?: string;
 }
 
 export interface ChatMessage {
@@ -106,6 +108,7 @@ export function useWebRTC({
   const onCameraOffByHostRef = useRef(onCameraOffByHost);
   const onKickedRef = useRef(onKicked);
   const onMeetingEndedRef = useRef(onMeetingEnded);
+  const userRef = useRef(user);
 
   useEffect(() => {
     userNameRef.current = userName;
@@ -119,6 +122,7 @@ export function useWebRTC({
     onCameraOffByHostRef.current = onCameraOffByHost;
     onKickedRef.current = onKicked;
     onMeetingEndedRef.current = onMeetingEnded;
+    userRef.current = user;
   });
 
   // ── Create a new RTCPeerConnection for a given peer ────────────────────────
@@ -210,7 +214,7 @@ export function useWebRTC({
                 wsRef.current.send(
                   JSON.stringify({
                     type: "join",
-                    name: `${userNameRef.current}__${myUniqueIdRef.current}`,
+                    name: `${userNameRef.current}||${userRef.current?.email || ""}||${userRef.current?.avatar || ""}__${myUniqueIdRef.current}`,
                   })
                 );
               }
@@ -231,7 +235,13 @@ export function useWebRTC({
         const peerId = data.peer_id as string;
         const rawName = data.name as string;
         const isSelf = rawName.endsWith(`__${myUniqueIdRef.current}`);
-        const cleanName = rawName.split("__")[0];
+        
+        const parts = rawName.split("__");
+        const metadataPart = parts[0];
+        const metaParts = metadataPart.split("||");
+        const cleanName = metaParts[0];
+        const peerEmail = metaParts[1] || "";
+        const peerAvatar = metaParts[2] || "";
 
         // Register our own peer ID when our join broadcast echoes back
         if (isSelf) {
@@ -259,7 +269,7 @@ export function useWebRTC({
           if (prev.find((p) => p.peerId === peerId)) return prev;
           return [
             ...prev,
-            { peerId, name: cleanName, stream: null, muted: false, cameraOff: false },
+            { peerId, name: cleanName, stream: null, muted: false, cameraOff: false, email: peerEmail, avatar: peerAvatar },
           ];
         });
 
@@ -273,7 +283,7 @@ export function useWebRTC({
             type: "offer",
             target: peerId,
             offer: offer,
-            name: `${userNameRef.current}__${myUniqueIdRef.current}`,
+            name: `${userNameRef.current}||${userRef.current?.email || ""}||${userRef.current?.avatar || ""}__${myUniqueIdRef.current}`,
           })
         );
       }
@@ -285,14 +295,28 @@ export function useWebRTC({
       else if (type === "offer") {
         const senderId = data.sender as string;
         const rawName = data.name as string;
-        const cleanName = rawName.split("__")[0];
+        
+        const parts = rawName.split("__");
+        const metadataPart = parts[0];
+        const metaParts = metadataPart.split("||");
+        const cleanName = metaParts[0];
+        const peerEmail = metaParts[1] || "";
+        const peerAvatar = metaParts[2] || "";
 
         // Add peer if not already tracked
         setRemotePeers((prev) => {
           if (prev.find((p) => p.peerId === senderId)) return prev;
           return [
             ...prev,
-            { peerId: senderId, name: cleanName, stream: null, muted: false, cameraOff: false },
+            { 
+              peerId: senderId, 
+              name: cleanName, 
+              stream: null, 
+              muted: false, 
+              cameraOff: false, 
+              email: peerEmail, 
+              avatar: peerAvatar 
+            },
           ];
         });
 
@@ -498,7 +522,7 @@ export function useWebRTC({
       ws.send(
         JSON.stringify({
           type: "join",
-          name: `${userNameRef.current}__${myUniqueIdRef.current}`,
+          name: `${userNameRef.current}||${userRef.current?.email || ""}||${userRef.current?.avatar || ""}__${myUniqueIdRef.current}`,
         })
       );
     };
@@ -565,8 +589,8 @@ export function useWebRTC({
             minute: "2-digit",
           }),
           isMe: true,
-          senderEmail: user?.email || undefined,
-          senderAvatar: user?.avatar || undefined,
+          senderEmail: userRef.current?.email || undefined,
+          senderAvatar: userRef.current?.avatar || undefined,
         },
       ]);
 
@@ -575,11 +599,11 @@ export function useWebRTC({
         JSON.stringify({
           type: "chat",
           message,
-          name: `${userName}||${user?.email || ""}||${user?.avatar || ""}__${myUniqueIdRef.current}`,
+          name: `${userName}||${userRef.current?.email || ""}||${userRef.current?.avatar || ""}__${myUniqueIdRef.current}`,
         })
       );
     },
-    [userName, user]
+    [userName]
   );
 
   // ── Replace Video Track Helper ─────────────────────────────────────────────

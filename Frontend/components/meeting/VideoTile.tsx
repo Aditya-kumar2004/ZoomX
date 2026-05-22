@@ -10,6 +10,7 @@ export interface VideoTileData {
   isYou?: boolean;
   stream?: MediaStream | null;
   avatar?: string;
+  isHost?: boolean;
 }
 
 export interface VideoTileProps {

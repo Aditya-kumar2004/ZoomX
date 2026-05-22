@@ -810,6 +810,7 @@ Secure & Encrypted collaboration powered by ZoomX.`;
       muted,
       cameraOff,
       avatar: user?.avatar || undefined,
+      isHost: isHost,
     },
     ...remotePeers.map((peer) => ({
       id: peer.peerId,
@@ -818,6 +819,8 @@ Secure & Encrypted collaboration powered by ZoomX.`;
       isYou: false,
       muted: peer.muted,
       cameraOff: peer.cameraOff,
+      avatar: peer.avatar,
+      isHost: !!(peer.email && meeting?.host_email && peer.email === meeting.host_email),
     })),
   ];
 
