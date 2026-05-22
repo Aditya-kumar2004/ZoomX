@@ -440,6 +440,9 @@ export function useWebRTC({
         }
 
         // Standard chat message
+        const isSelf = rawName.endsWith(`__${myUniqueIdRef.current}`);
+        if (isSelf) return;
+
         setChatMessages((prev) => [
           ...prev,
           {
@@ -450,7 +453,7 @@ export function useWebRTC({
               hour: "2-digit",
               minute: "2-digit",
             }),
-            isMe: senderId === myPeerIdRef.current,
+            isMe: false,
             senderEmail,
             senderAvatar,
           },
