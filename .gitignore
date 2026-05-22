@@ -1,0 +1,69 @@
+# ─── OS / System ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.stackdump
+
+# ─── Editor / IDE ─────────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FRONTEND — Next.js / Node.js
+# ═══════════════════════════════════════════════════════════════════════════════
+Frontend/zoomx-connect/node_modules/
+Frontend/zoomx-connect/.next/
+Frontend/zoomx-connect/out/
+Frontend/zoomx-connect/dist/
+Frontend/zoomx-connect/.env.local
+Frontend/zoomx-connect/.env.development.local
+Frontend/zoomx-connect/.env.test.local
+Frontend/zoomx-connect/.env.production.local
+Frontend/zoomx-connect/tsconfig.tsbuildinfo
+Frontend/zoomx-connect/.wrangler/
+Frontend/zoomx-connect/bun.lock
+Frontend/zoomx-connect/.lovable/
+
+# Logs
+Frontend/zoomx-connect/npm-debug.log*
+Frontend/zoomx-connect/yarn-debug.log*
+Frontend/zoomx-connect/yarn-error.log*
+Frontend/zoomx-connect/pnpm-debug.log*
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# BACKEND — Python / Django
+# ═══════════════════════════════════════════════════════════════════════════════
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/**/*.pyc
+backend/**/*.pyo
+backend/**/*.pyd
+backend/.env
+backend/ZoomX/db.sqlite3
+backend/ZoomX/**/__pycache__/
+backend/ZoomX/**/*.pyc
+
+# Django migrations (keep these — they are part of source)
+# backend/**/migrations/*.py  <-- intentionally NOT ignored
+
+# Static / media files (generated at deploy time)
+backend/staticfiles/
+backend/mediafiles/
+backend/media/
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+*.log
+*.local
