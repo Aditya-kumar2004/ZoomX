@@ -706,7 +706,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <div align="center">
 
-**Built with ❤️ using Next.js, Django, and WebRTC**
+**Built with Aditya using Next.js, Django, and WebRTC**
 
 *ZoomX — Where every connection matters.*
 
