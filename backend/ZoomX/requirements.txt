@@ -10,4 +10,5 @@ requests
 djangorestframework-simplejwt==5.3.1
 PyJWT==2.13.0
 channels==4.0.0
-daphne==4.0.0
+daphne==4.0.0
+whitenoise==6.8.2

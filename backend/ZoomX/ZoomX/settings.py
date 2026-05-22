@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -120,6 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 REST_FRAMEWORK = {
@@ -136,9 +138,9 @@ SIMPLE_JWT = {
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+# Allow frontend to connect from any URL during deployment
+# (For strict security later, replace this with your actual Vercel URL)
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 
