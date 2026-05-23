@@ -69,7 +69,7 @@ export function GoogleButton({ onClick, label }: { onClick: () => void; label: s
   return (
     <button
       onClick={onClick}
-      className="w-full bg-white text-gray-800 hover:bg-white/90 transition rounded-xl py-2 flex items-center justify-center gap-3 font-medium text-sm"
+      className="w-full bg-white text-gray-800 hover:bg-white/90 transition rounded-xl py-2 flex items-center justify-center gap-3 font-medium text-sm cursor-pointer"
     >
       <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
         <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35.5 24 35.5c-6.4 0-11.5-5.2-11.5-11.5S17.6 12.5 24 12.5c2.9 0 5.6 1.1 7.6 2.9l5.7-5.7C33.9 6.5 29.2 4.5 24 4.5 13.2 4.5 4.5 13.2 4.5 24S13.2 43.5 24 43.5 43.5 34.8 43.5 24c0-1.2-.1-2.3-.4-3.5z" />
