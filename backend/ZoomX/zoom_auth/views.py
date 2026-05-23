@@ -69,6 +69,9 @@ def register_user(request):
         defaults={'otp': otp}
     )
 
+    # Print OTP to server console logs as a fallback bypass for Render Free Tier SMTP outbound firewall restrictions
+    print(f"[OTP BYPASS] Generated OTP for user '{email}' is: {otp}")
+
     # Send Email in a background thread to make registration instant
     subject = "Verify your ZoomX Account"
     
