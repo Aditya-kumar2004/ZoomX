@@ -18,9 +18,11 @@ export function Providers({ children }: { children: ReactNode }) {
       })
   );
 
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "902405653902-8rik7sfkdv75jip7etd92rg85mqlm2a4.apps.googleusercontent.com";
+
   return (
     <QueryClientProvider client={queryClient}>
-      <GoogleOAuthProvider clientId="902405653902-8rik7sfkdv75jip7etd92rg85mqlm2a4.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={googleClientId}>
         <AuthProvider>
           {children}
           <Toaster
