@@ -150,8 +150,21 @@ SIMPLE_JWT = {
 
 
 # Allow frontend to connect from any URL during deployment
-# (For strict security later, replace this with your actual Vercel URL)
 CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "https://zoom-x-cup8.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://zoom-x-cup8.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 
 

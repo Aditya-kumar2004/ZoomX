@@ -3,7 +3,25 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { meetingAPI } from "@/services/api";
 
-const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000";
+const getWebSocketBase = (): string => {
+  if (process.env.NEXT_PUBLIC_WS_URL) {
+    return process.env.NEXT_PUBLIC_WS_URL;
+  }
+  const backend = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (backend) {
+    let clean = backend.replace(/\/api\/?$/, "");
+    if (clean.startsWith("https://")) {
+      return clean.replace("https://", "wss://");
+    }
+    if (clean.startsWith("http://")) {
+      return clean.replace("http://", "ws://");
+    }
+    return clean;
+  }
+  return "ws://localhost:8000";
+};
+
+const WS_BASE = getWebSocketBase();
 
 const ICE_SERVERS = {
   iceServers: [

@@ -1,7 +1,18 @@
 import type { Meeting, Participant, User, AuthTokens } from "@/types";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000/api";
+const getApiBaseUrl = (): string => {
+  let rawUrl = process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://127.0.0.1:8000/api";
+  if (rawUrl && !rawUrl.endsWith('/api') && !rawUrl.endsWith('/api/')) {
+    if (rawUrl.endsWith('/')) {
+      rawUrl = rawUrl + 'api';
+    } else {
+      rawUrl = rawUrl + '/api';
+    }
+  }
+  return rawUrl;
+};
+
+const BASE_URL = getApiBaseUrl();
 
 // ── Token storage helpers ───────────────────────────────────────────────────────────
 const ACCESS_TOKEN_KEY = "access_token";
