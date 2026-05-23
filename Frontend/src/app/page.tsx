@@ -26,8 +26,9 @@ import {
   Check,
   Activity,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import Orb from "@/components/ui/Orb";
+const Orb = dynamic(() => import("@/components/ui/Orb"), { ssr: false });
 import { LandingLayout } from "@/components/layout/LandingLayout";
 
 export default function Landing() {
